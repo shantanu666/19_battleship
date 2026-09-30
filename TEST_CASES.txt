@@ -77,3 +77,10 @@ Setup: Start a game with deterministic AI coordinates.
 Steps: Fire at a ship cell without sinking the fleet.
 Expected: The game prompts the player again without firing an AI shot. After a
 miss, the AI takes its normal turn.
+
+TC-14: Randomize valid fleet placement
+Setup: Start several new games.
+Steps: Inspect each player's and AI's fleet positions.
+Expected: Each side has one length-3 ship and one length-2 ship, each ship is
+straight and within the board, ships on the same board do not overlap, and
+placements vary between games.

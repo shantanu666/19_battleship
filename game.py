@@ -1,3 +1,5 @@
+import random
+
 from board import Board
 from ai import AI
 
@@ -10,10 +12,28 @@ class Battleship:
         self._setup()
 
     def _setup(self):
-        self.player.place_ship({(1, 1), (1, 2), (1, 3)})
-        self.player.place_ship({(3, 4), (4, 4)})
-        self.enemy.place_ship({(2, 2), (2, 3), (2, 4)})
-        self.enemy.place_ship({(4, 1), (4, 2)})
+        self._place_fleet(self.player)
+        self._place_fleet(self.enemy)
+
+    def _place_fleet(self, board):
+        for length in (3, 2):
+            placements = []
+            for row in range(Board.SIZE):
+                for column in range(Board.SIZE):
+                    for row_step, column_step in ((0, 1), (1, 0)):
+                        end_row = row + (length - 1) * row_step
+                        end_column = column + (length - 1) * column_step
+                        if end_row >= Board.SIZE or end_column >= Board.SIZE:
+                            continue
+                        cells = {
+                            (row + offset * row_step, column + offset * column_step)
+                            for offset in range(length)
+                        }
+                        if not board.ships.intersection(cells):
+                            placements.append(cells)
+            if not placements:
+                raise ValueError("Unable to place the full fleet on this board.")
+            board.place_ship(random.choice(placements))
 
     def show(self):
         print("\nYour shots are coordinates like 2,3.")
