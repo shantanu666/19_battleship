@@ -11,11 +11,13 @@ class Battleship:
 
     def _setup(self):
         self.player.place_ship({(1, 1), (1, 2), (1, 3)})
+        self.player.place_ship({(3, 4), (4, 4)})
         self.enemy.place_ship({(2, 2), (2, 3), (2, 4)})
+        self.enemy.place_ship({(4, 1), (4, 2)})
 
     def show(self):
         print("\nYour shots are coordinates like 2,3.")
-        print("Ship cells remaining:", len(self.enemy.ships - self.player.shots))
+        print("Ship cells remaining:", len(self.enemy.ships - self.enemy.shots))
 
     def run(self):
         print("Battleship")
@@ -33,7 +35,7 @@ class Battleship:
             if not (0 <= pos[0] < Board.SIZE and 0 <= pos[1] < Board.SIZE):
                 print("Outside board.")
                 continue
-            if pos in self.player.shots:
+            if pos in self.enemy.shots:
                 print("Already fired there.")
                 continue
             print("HIT!" if self.enemy.fire(pos) else "MISS!")
@@ -43,5 +45,8 @@ class Battleship:
 
             ai_pos = self.ai.choose()
             print(f"AI fired at {ai_pos[0] + 1},{ai_pos[1] + 1}")
-            if ai_pos in self.player.ships:
+            if self.player.fire(ai_pos):
                 print("AI scored a hit.")
+            if self.player.all_sunk():
+                print("The AI sank your fleet.")
+                return

@@ -3,14 +3,37 @@ class Board:
 
     def __init__(self):
         self.ships = set()
+        self.fleet = []
+        self.ship_hits = []
         self.shots = set()
 
     def place_ship(self, cells):
-        self.ships.update(cells)
+        ship = set(cells)
+        if not ship:
+            raise ValueError("A ship must occupy at least one cell.")
+        if self.ships.intersection(ship):
+            raise ValueError("Ships cannot overlap.")
+        self.ships.update(ship)
+        self.fleet.append(ship)
+        self.ship_hits.append(set())
 
     def fire(self, pos):
+        if pos in self.shots:
+            raise ValueError("Already fired at this coordinate.")
         self.shots.add(pos)
-        return pos in self.ships
+        for ship, hits in zip(self.fleet, self.ship_hits):
+            if pos in ship:
+                hits.add(pos)
+                return True
+        return False
+
+    @property
+    def sunk_ships(self):
+        return {
+            frozenset(ship)
+            for ship, hits in zip(self.fleet, self.ship_hits)
+            if ship <= hits
+        }
 
     def all_sunk(self):
-        return self.ships <= self.shots
+        return bool(self.fleet) and len(self.sunk_ships) == len(self.fleet)
