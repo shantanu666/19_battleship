@@ -71,3 +71,9 @@ remaining ship.
 Steps: Sink the last ship.
 Expected: The final shot produces one HIT message and one fleet-win message,
 then the game exits without another turn.
+
+TC-13: Earn another turn after a hit [Bonus turn rule]
+Setup: Start a game with deterministic AI coordinates.
+Steps: Fire at a ship cell without sinking the fleet.
+Expected: The game prompts the player again without firing an AI shot. After a
+miss, the AI takes its normal turn.

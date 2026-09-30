@@ -60,9 +60,11 @@ class Battleship:
             if pos in self.enemy.shots:
                 print("Already fired there.")
                 continue
-            self._report_shot(self.enemy, pos, "You")
+            player_hit = self._report_shot(self.enemy, pos, "You")
             if self.enemy.all_sunk():
                 return
+            if player_hit:
+                continue
 
             ai_pos = self.ai.choose()
             if ai_pos is None:
