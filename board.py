@@ -6,6 +6,7 @@ class Board:
         self.fleet = []
         self.ship_hits = []
         self.shots = set()
+        self.shot_results = {}
 
     def place_ship(self, cells):
         ship = set(cells)
@@ -24,7 +25,9 @@ class Board:
         for ship, hits in zip(self.fleet, self.ship_hits):
             if pos in ship:
                 hits.add(pos)
+                self.shot_results[pos] = True
                 return True
+        self.shot_results[pos] = False
         return False
 
     @property

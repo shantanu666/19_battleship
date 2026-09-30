@@ -49,3 +49,25 @@ shot or taking an AI turn.
 TC-09: Quit [Existing input handling]
 Steps: Enter q at the player prompt.
 Expected: The game exits without firing either side's shot.
+
+TC-10: Show available target cells [Task 4]
+Setup: Start a new game.
+Steps: View the board before firing, then fire at one known ship coordinate
+and one known empty coordinate.
+Expected: The grid starts with underscores for every cell, changes the hit to
+X and the miss to O, and leaves all untried cells as underscores.
+
+TC-11: Report shot feedback exactly once [Task 4]
+Setup: Start a game with deterministic player and AI coordinates.
+Steps: Fire one hit and one miss as the player; have the AI fire one hit and
+one miss in separate runs.
+Expected: Every actual shot produces exactly one corresponding HIT or MISS
+message. Each sunk ship produces one sinking message; internal AI choice
+selection produces no shot-result messages.
+
+TC-12: Report a fleet win once [Task 4]
+Setup: Set up a one-ship fleet or use deterministic shots against the final
+remaining ship.
+Steps: Sink the last ship.
+Expected: The final shot produces one HIT message and one fleet-win message,
+then the game exits without another turn.

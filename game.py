@@ -17,7 +17,29 @@ class Battleship:
 
     def show(self):
         print("\nYour shots are coordinates like 2,3.")
+        print("    " + " ".join(str(column + 1) for column in range(Board.SIZE)))
+        for row in range(Board.SIZE):
+            marks = [
+                "_" if (row, column) not in self.enemy.shot_results
+                else "X" if self.enemy.shot_results[(row, column)]
+                else "O"
+                for column in range(Board.SIZE)
+            ]
+            print(f"{row + 1:>2}  " + " ".join(marks))
         print("Ship cells remaining:", len(self.enemy.ships - self.enemy.shots))
+
+    def _report_shot(self, board, pos, shooter):
+        sunk_before = board.sunk_ships
+        hit = board.fire(pos)
+        print(f"{shooter} HIT!" if hit else f"{shooter} MISS!")
+        if board.sunk_ships - sunk_before:
+            if board.all_sunk():
+                print(f"{shooter} sank the fleet.")
+            elif shooter == "You":
+                print("You sank a ship.")
+            else:
+                print("AI sank one of your ships.")
+        return hit
 
     def run(self):
         print("Battleship")
@@ -38,9 +60,8 @@ class Battleship:
             if pos in self.enemy.shots:
                 print("Already fired there.")
                 continue
-            print("HIT!" if self.enemy.fire(pos) else "MISS!")
+            self._report_shot(self.enemy, pos, "You")
             if self.enemy.all_sunk():
-                print("You sank the fleet.")
                 return
 
             ai_pos = self.ai.choose()
@@ -48,10 +69,7 @@ class Battleship:
                 print("AI has no remaining targets.")
                 continue
             print(f"AI fired at {ai_pos[0] + 1},{ai_pos[1] + 1}")
-            ai_hit = self.player.fire(ai_pos)
+            ai_hit = self._report_shot(self.player, ai_pos, "AI")
             self.ai.record_result(ai_pos, ai_hit)
-            if ai_hit:
-                print("AI scored a hit.")
             if self.player.all_sunk():
-                print("The AI sank your fleet.")
                 return
