@@ -29,14 +29,17 @@ Expected: Both ships appear in sunk_ships and all_sunk becomes True. In a
 game, the turn loop ends when either fleet is sunk.
 
 TC-06: Prevent repeated AI shots [Task 3]
-Setup: Create an AI and select shots until multiple choices have been made.
-Steps: Request another choice.
-Expected: The returned coordinate has not appeared in any previous choice.
+Setup: Create an AI with a small board, such as size 2.
+Steps: Request a choice until every cell has been selected, then request again.
+Expected: Every coordinate is unique; after all cells are tried, choose returns
+None without raising an exception.
 
 TC-07: Target near a hit [Task 3]
-Setup: Mark a hit at an interior board coordinate.
-Steps: Request the AI's next shot.
-Expected: An untried orthogonally adjacent cell is preferred when available.
+Setup: Create an AI and record a hit at (1, 1) on a size-3 board.
+Steps: Request its next choice.
+Expected: It chooses an untried orthogonally adjacent cell: (0, 1), (2, 1),
+(1, 0), or (1, 2). It does not choose diagonally adjacent cells while these
+options remain.
 
 TC-08: Reject invalid player coordinates [Existing input validation]
 Steps: Enter malformed input, then an out-of-range coordinate.
